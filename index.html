@@ -610,8 +610,8 @@
 <!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee">
-    <span>Php </span><span>HTML </span><span>Java Script </span><span>MySQL </span><span>Tailwind CSS </span><span>REST API </span><span>Git </span>
-    <span>Php </span><span>HTML </span><span>Java Script </span><span>MySQL </span><span>Tailwind CSS </span><span>REST API </span><span>Git </span>
+    <span>Php <b>✦</b></span><span>HTML <b>✦</b></span><span>Java Script <b>✦</b></span><span>MySQL <b>✦</b></span><span>Tailwind CSS <b>✦</b></span><span>REST API <b>✦</b></span><span>Git <b>✦</b></span>
+    <span>Php <b>✦</b></span><span>HTML <b>✦</b></span><span>Java Script <b>✦</b></span><span>MySQL <b>✦</b></span><span>Tailwind CSS <b>✦</b></span><span>REST API <b>✦</b></span><span>Git <b>✦</b></span>
   </div>
 </div>
 
@@ -620,11 +620,11 @@
   <p class="section-label">About me</p>
   <div class="about-grid">
     <div>
-      <h2>A student who turns <span>ideas into code.</span></h2>
+      <h2>I'm a student who turns <span>ideas into code.</span></h2>
     </div>
     <div class="about-right">
-      <p>I'm Aqil Ommar, a Software Engineering student with a passion for building fast, accessible, and visually compelling web applications. I care deeply about the details — from database schema to pixel-perfect UI.</p>
-      <p>When I'm not coding, I'm exploring new technologies, learning how design and engineering can work together seamlessly.</p>
+      <p>I'm a Software Engineering student with a passion for building fast, accessible, and visually compelling web applications. I care deeply about the details — from database schema to pixel-perfect UI.</p>
+      <p>When I'm not coding, I'm exploring new technologies, contributing to open source, and learning how design and engineering can work together seamlessly.</p>
       <div class="skills">
         <span class="skill-tag">JavaScript</span>
         <span class="skill-tag">PHP</span>
@@ -701,7 +701,7 @@
 
     <div class="card fade-up">
       <h3>SMDIS — Sistem Manajemen Data Siswa</h3>
-      <p>SMDIS is a web-based system designed to manage student data efficiently. It allows administrators to handle student records, perform CRUD operations, and maintain organized and structured data with secure access control.</p>
+      <p>SM-DIS is a web-based system designed to manage student data efficiently. It allows administrators to handle student records, perform CRUD operations, and maintain organized and structured data with secure access control.</p>
       <div class="card-tags">
         <span class="card-tag">Vanilla JS</span>
         <span class="card-tag">Tailwind</span>
@@ -776,128 +776,125 @@
     
     <div class="contact-form fade-up">
       <div class="form-message" id="formMessage"></div>
-      <form id="contactForm" action="send-mail.php" method="POST">
-        <div class="form-group">
-          <label for="name">Your Name</label>
-          <input type="text" id="name" name="name" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="subject">Subject</label>
-          <input type="text" id="subject" name="subject" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" class="form-control" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-submit">
-          <span>Send Message</span>
-          <span class="spinner"></span>
-        </button>
-      </form>
+<form id="contactForm" action="https://formspree.io/f/xojpzdkj" method="POST">
+  <div class="form-group">
+    <label>Your Name</label>
+    <input type="text" name="name" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label>Email</label>
+    <input type="email" name="email" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label>Subject</label>
+    <input type="text" name="subject" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label>Message</label>
+    <textarea name="message" class="form-control" required></textarea>
+  </div>
+
+  <input type="hidden" name="_subject" value="New Message Portfolio">
+
+  <button type="submit" class="btn btn-submit">
+    <span>Send Message</span>
+    <span class="spinner"></span>
+  </button>
+</form>
     </div>
     
     <div class="contact-links">
-      <a href="mailto:aqilmochtar1@gmail.com" class="contact-item">Email</a>
-      <a href="https://github.com/aqil-46" class="contact-item">GitHub</a>
-      <a href="https://www.instagram.com/aqil.ommar28/" class="contact-item">Instagram</a>
+      <a href="mailto:alex@example.com" class="contact-item">✉ alex@example.com</a>
+      <a href="#" class="contact-item">⬡ GitHub</a>
+      <a href="#" class="contact-item">in LinkedIn</a>
+      <a href="#" class="contact-item">📷 Instagram</a>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>© 2026 Aqil Ommar. Designed & built with care.</p>
-  <p>Pekalongan, Indonesia 🇮🇩</p>
+  <p>© 2025 Alex Rendra. Designed & built with care.</p>
+  <p>Semarang, Indonesia 🇮🇩</p>
 </footer>
 
 <script>
-  // NAVBAR SCROLL EFFECT
-  window.addEventListener('scroll', function() {
-    const navbar = document.getElementById('navbar');
-    if (window.scrollY > 50) {
-      navbar.classList.add('nav-scrolled');
-    } else {
-      navbar.classList.remove('nav-scrolled');
+ const navbar = document.getElementById('navbar');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('nav-scrolled');
+  } else {
+    navbar.classList.remove('nav-scrolled');
+  }
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+
+      if (e.target.classList.contains('skill-category')) {
+        const bars = e.target.querySelectorAll('.skill-progress');
+        bars.forEach(bar => {
+          const width = bar.getAttribute('data-width');
+          setTimeout(() => {
+            bar.style.width = width;
+          }, 300);
+        });
+      }
     }
   });
+}, { threshold: 0.15 });
 
-  // FADE UP ANIMATION
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { 
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        
-        // Animate skill bars when visible
-        if (e.target.classList.contains('skill-category')) {
-          const skillBars = e.target.querySelectorAll('.skill-progress');
-          skillBars.forEach(bar => {
-            const width = bar.getAttribute('data-width');
-            setTimeout(() => {
-              bar.style.width = width;
-            }, 300);
-          });
-        }
-      }
-    });
-  }, { threshold: 0.15 });
-  
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-  document.querySelectorAll('.skill-category').forEach(el => observer.observe(el));
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+document.querySelectorAll('.skill-category').forEach(el => observer.observe(el));
 
-  // CONTACT FORM SUBMISSION
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
+const form = document.getElementById('contactForm');
+const formMessage = document.getElementById('formMessage');
+
+if (form) {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    
-    const form = this;
+
     const submitBtn = form.querySelector('.btn-submit');
-    const formMessage = document.getElementById('formMessage');
-    
-    // Show loading state
+
     submitBtn.classList.add('loading');
     submitBtn.querySelector('span').textContent = 'Sending...';
+
     formMessage.classList.remove('show', 'success', 'error');
-    
-    // Create form data
-    const formData = new FormData(form);
-    
-    // Send the form data using fetch API
-    fetch('send-mail.php', {
+
+    fetch(form.action, {
       method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Reset loading state
-      submitBtn.classList.remove('loading');
-      submitBtn.querySelector('span').textContent = 'Send Message';
-      
-      if (data.success) {
-        // Show success message
-        formMessage.textContent = data.message || 'Your message has been sent successfully!';
-        formMessage.classList.add('success', 'show');
-        
-        // Reset form
-        form.reset();
-      } else {
-        // Show error message
-        formMessage.textContent = data.message || 'An error occurred. Please try again.';
-        formMessage.classList.add('error', 'show');
+      body: new FormData(form),
+      headers: {
+        'Accept': 'application/json'
       }
     })
-    .catch(error => {
-      // Reset loading state
+    .then(res => {
+      if (!res.ok) throw new Error('Failed to send');
+      return res.json();
+    })
+    .then(() => {
       submitBtn.classList.remove('loading');
       submitBtn.querySelector('span').textContent = 'Send Message';
-      
-      // Show error message
-      formMessage.textContent = 'An error occurred. Please try again later.';
+
+      formMessage.textContent = 'Message sent!';
+      formMessage.classList.add('success', 'show');
+
+      form.reset();
+    })
+    .catch(() => {
+      submitBtn.classList.remove('loading');
+      submitBtn.querySelector('span').textContent = 'Send Message';
+
+      formMessage.textContent = 'An error occurred. Please try again.';
       formMessage.classList.add('error', 'show');
-      console.error('Error:', error);
     });
   });
+}
 </script>
 </body>
 </html>
