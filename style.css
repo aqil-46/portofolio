@@ -7,6 +7,7 @@
     --red: #e83030;
     --blue: #1a56ff;
     --green: #00c26a;
+    --ungu: #6366f1;
     --border: 3px solid #0a0a0a;
     --border-thick: 5px solid #0a0a0a;
     --shadow: 6px 6px 0px #0a0a0a;
@@ -558,10 +559,10 @@ body::after {
 .project-card:nth-child(4):hover { background: var(--green); }
 .project-card:nth-child(5) { background: var(--yellow); color: var(--black); }
 .project-card:nth-child(5):hover { background: var(--white); }
-.project-card:nth-child(1) { background: var(--green); color: var(--black); }
-.project-card:nth-child(1):hover { background: var(--black); }
-.project-card:nth-child(3) { background: var(--red); color: var(--white); }
-.project-card:nth-child(3):hover { background: var(--black); color: var(--white); }
+.project-card:nth-child(1) { background: var(--ungu); color: var(--white); }
+.project-card:nth-child(1):hover { background: var(--red); }
+.project-card:nth-child(3) { background: var(--green); color: var(--black); }
+.project-card:nth-child(3):hover { background: var(--ungu); color: var(--white); }
 
 .project-img {
     height: 240px;
