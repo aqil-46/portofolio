@@ -187,5 +187,19 @@ const projects = [
         desc: 'A web-based student management system featuring secure CRUD operations, structured data handling, and an administrative dashboard — built entirely on the frontend without a backend.',
         lessons: 'Deepened understanding of pure frontend CRUD architecture and strategies for maintaining data consistency using Local Storage.',
         demo: 'https://sm-dis.vercel.app/'
+    },
+    {
+        title: 'Wedding Invitation',
+tech: 'HTML · CSS · JAVASCRIPT',
+desc: 'A modern wedding invitation website featuring interactive event details, smooth animations, and a fully responsive user experience.',
+lessons: 'The main challenge was creating smooth page transitions and maintaining responsive layouts across different screen sizes and devices.',
+demo: 'https://your-demo-link.com'
+    },
+    {
+        title: 'PORTFOLIO',
+        tech: 'HTML · CSS · JAVASCRIPT',
+        desc: 'Personal developer portfolio built entirely from scratch using pure HTML, CSS, and vanilla JavaScript. Features scroll-reveal animations, a bold neobrutalist design system, and smooth interactive elements — no frameworks, no dependencies.',
+        lessons: 'Deepened understanding of CSS custom properties, scroll-driven animations, and building a cohesive design system from scratch without relying on frameworks.',
+        demo: '#hero'
     }
 ];
