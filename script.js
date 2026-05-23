@@ -1,164 +1,485 @@
-document.addEventListener('DOMContentLoaded', () => {
+const App = {
+    state: {
+        scrollY: 0,
+        isScrolling: false,
+        activeSection: null
+    },
 
-    // 1. Scroll Reveal
-    const revealElements = document.querySelectorAll('.reveal');
+    init() {
+        this.initScrollReveal();
+        this.initNavigation();
+        this.initModals();
+        this.initSmoothScroll();
+        this.initParallax();
+        this.initTypingEffect();
+        this.initCursorEffect();
+        this.initGlitchEffect();
+        this.initMobileMenu();
+        this.initContactForm();
+        this.initProjectModal();
+        this.initThemeToggle();
+        this.initScrollProgress();
+        this.initLazyLoading();
+        this.initBackToTop();
+    },
 
-    const revealOnScroll = () => {
-        revealElements.forEach(el => {
-            const isVisible = el.getBoundingClientRect().top < window.innerHeight - 100;
-            if (isVisible) el.classList.add('active');
-        });
-    };
+    initScrollReveal() {
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
 
-    window.addEventListener('scroll', revealOnScroll, { passive: true });
-    revealOnScroll();
+        revealElements.forEach(el => observer.observe(el));
+    },
 
-    // 2. Sticky Navbar + Active Nav Link
-    const navbar = document.querySelector('.navbar');
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
+    initNavigation() {
+        const navbar = document.querySelector('.navbar');
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        let lastScroll = 0;
 
-    const updateNav = () => {
-        navbar.classList.toggle('scrolled', window.scrollY > 50);
+        const updateNav = () => {
+            const currentScroll = window.pageYOffset;
+            
+            navbar.classList.toggle('scrolled', currentScroll > 50);
+            navbar.classList.toggle('hidden', currentScroll > lastScroll && currentScroll > 200);
+            
+            lastScroll = currentScroll;
+            this.state.scrollY = currentScroll;
 
-        let current = '';
-        sections.forEach(section => {
-            if (window.pageYOffset >= section.offsetTop - section.clientHeight / 3) {
-                current = section.id;
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (currentScroll >= sectionTop && currentScroll < sectionTop + sectionHeight) {
+                    current = section.id;
+                }
+            });
+
+            if (current !== this.state.activeSection) {
+                this.state.activeSection = current;
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
+                });
             }
+        };
+
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+    },
+
+    initModals() {
+        const modal = document.getElementById('modal');
+        const certImg = document.getElementById('certImg');
+        const modalImg = document.getElementById('modalImg');
+        const closeBtn = document.querySelector('.close');
+
+        const openModal = () => {
+            if (!certImg) return;
+            modalImg.src = certImg.src;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modal.classList.add('active'), 10);
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        };
+
+        certImg?.addEventListener('click', openModal);
+        closeBtn?.addEventListener('click', closeModal);
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                this.closeProjectModal();
+            }
+        });
+    },
+
+    initSmoothScroll() {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                const href = anchor.getAttribute('href');
+                if (href === '#' || !href) return;
+                
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (!target) return;
+
+                const offset = 80;
+                const targetPosition = target.offsetTop - offset;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    },
+
+    initParallax() {
+        const parallaxElements = document.querySelectorAll('[data-parallax]');
+        
+        const handleParallax = () => {
+            const scrolled = window.pageYOffset;
+            parallaxElements.forEach(el => {
+                const speed = parseFloat(el.dataset.parallax) || 0.5;
+                const offset = scrolled * speed;
+                el.style.transform = `translateY(${offset}px)`;
+            });
+        };
+
+        if (parallaxElements.length > 0) {
+            window.addEventListener('scroll', handleParallax, { passive: true });
+        }
+    },
+
+    initTypingEffect() {
+        const typingElement = document.querySelector('[data-typing]');
+        if (!typingElement) return;
+
+        const text = typingElement.dataset.typing;
+        const speed = parseInt(typingElement.dataset.speed) || 100;
+        let index = 0;
+
+        typingElement.textContent = '';
+
+        const type = () => {
+            if (index < text.length) {
+                typingElement.textContent += text.charAt(index);
+                index++;
+                setTimeout(type, speed);
+            }
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    type();
+                    observer.disconnect();
+                }
+            });
+        });
+
+        observer.observe(typingElement);
+    },
+
+    initCursorEffect() {
+        if (window.innerWidth < 768) return;
+
+        const cursor = document.createElement('div');
+        cursor.className = 'custom-cursor';
+        document.body.appendChild(cursor);
+
+        const cursorDot = document.createElement('div');
+        cursorDot.className = 'cursor-dot';
+        document.body.appendChild(cursorDot);
+
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let dotX = 0, dotY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            dotX = e.clientX;
+            dotY = e.clientY;
+        });
+
+        const animateCursor = () => {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            cursorDot.style.left = dotX + 'px';
+            cursorDot.style.top = dotY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        };
+
+        animateCursor();
+
+        const interactiveElements = document.querySelectorAll('a, button, .project-card, input, textarea');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+        });
+    },
+
+    initGlitchEffect() {
+        const glitchElements = document.querySelectorAll('[data-glitch]');
+        
+        glitchElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                el.classList.add('glitching');
+                setTimeout(() => el.classList.remove('glitching'), 500);
+            });
+        });
+    },
+
+    initMobileMenu() {
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.querySelector('.nav-links');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        if (!hamburger || !navMenu) return;
+
+        const closeMenu = () => {
+            navMenu.classList.remove('show');
+            hamburger.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        };
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+            hamburger.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
         });
 
         navLinks.forEach(link => {
-            link.classList.toggle('active', link.getAttribute('href').includes(current));
-        });
-    };
-
-    window.addEventListener('scroll', updateNav, { passive: true });
-
-    // 3. Certificate Modal
-    const modal = document.getElementById('modal');
-    const certImg = document.getElementById('certImg');
-    const modalImg = document.getElementById('modalImg');
-    const closeBtn = document.querySelector('.close');
-
-    const openModal = () => {
-        modalImg.src = certImg.src;
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-    };
-
-    const closeModal = () => {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-    };
-
-    certImg?.addEventListener('click', openModal);
-    closeBtn?.addEventListener('click', closeModal);
-
-    modal?.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-});
-
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.querySelector('.nav-links');
-
-hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('show');
-});
-
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('show');
-    });
-});
-
-const form = document.querySelector('.contact-form');
-
-form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const btn = form.querySelector('button[type="submit"]');
-    const data = new FormData(form);
-
-    btn.textContent = 'SENDING...';
-    btn.disabled = true;
-
-    try {
-        const res = await fetch(form.action, {
-            method: 'POST',
-            body: data,
-            headers: { 'Accept': 'application/json' }
+            link.addEventListener('click', closeMenu);
         });
 
-        if (res.ok) {
-            showNotif('MESSAGE SENT SUCCESSFULLY ✓', 'success');
-            form.reset();
-        } else {
-            showNotif('FAILED TO SEND. TRY AGAIN.', 'error');
-        }
-    } catch {
-        showNotif('NETWORK ERROR. TRY AGAIN.', 'error');
-    } finally {
-        btn.textContent = 'SEND MESSAGE →';
-        btn.disabled = false;
-    }
-});
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+                closeMenu();
+            }
+        });
+    },
 
-function showNotif(message, type) {
-    const notif = document.createElement('div');
-    notif.className = `notif notif-${type}`;
-    notif.textContent = message;
-    document.body.appendChild(notif);
+    initContactForm() {
+        const form = document.querySelector('.contact-form');
+        if (!form) return;
 
-    setTimeout(() => notif.classList.add('notif-show'), 10);
-    setTimeout(() => {
-        notif.classList.remove('notif-show');
-        setTimeout(() => notif.remove(), 300);
-    }, 3500);
-}
+        const inputs = form.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => input.parentElement.classList.add('focused'));
+            input.addEventListener('blur', () => {
+                if (!input.value) input.parentElement.classList.remove('focused');
+            });
 
-document.addEventListener('click', (e) => {
-    if (
-        !navMenu.contains(e.target) &&
-        !hamburger.contains(e.target)
-    ) {
-        navMenu.classList.remove('show');
-    }
-});
-const projectModal = document.getElementById('projectModal');
-const projectModalClose = document.getElementById('projectModalClose');
+            input.addEventListener('input', () => {
+                this.validateField(input);
+            });
+        });
 
-document.querySelectorAll('.project-card').forEach((card, i) => {
-    const detailLink = card.querySelector('.link:last-child');
-    detailLink?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const p = projects[i];
-        document.getElementById('modalTitle').textContent = p.title;
-        document.getElementById('modalTech').textContent = p.tech;
-        document.getElementById('modalDesc').textContent = p.desc;
-        document.getElementById('modalLessons').textContent = p.lessons;
-        document.getElementById('modalDemo').href = p.demo;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!this.validateForm(form)) {
+                this.showNotification('PLEASE FILL ALL REQUIRED FIELDS', 'error');
+                return;
+            }
+
+            const btn = form.querySelector('button[type="submit"]');
+            const data = new FormData(form);
+            const originalText = btn.textContent;
+
+            btn.textContent = 'SENDING...';
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.ok) {
+                    this.showNotification('MESSAGE SENT SUCCESSFULLY ✓', 'success');
+                    form.reset();
+                    inputs.forEach(input => input.parentElement.classList.remove('focused'));
+                } else {
+                    this.showNotification('FAILED TO SEND. TRY AGAIN.', 'error');
+                }
+            } catch {
+                this.showNotification('NETWORK ERROR. TRY AGAIN.', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.classList.remove('loading');
+            }
+        });
+    },
+
+    validateField(input) {
+        const isValid = input.checkValidity();
+        input.parentElement.classList.toggle('error', !isValid && input.value);
+        return isValid;
+    },
+
+    validateForm(form) {
+        const inputs = form.querySelectorAll('input[required], textarea[required]');
+        let isValid = true;
+
+        inputs.forEach(input => {
+            if (!this.validateField(input) || !input.value) {
+                isValid = false;
+            }
+        });
+
+        return isValid;
+    },
+
+    initProjectModal() {
+        const projectModal = document.getElementById('projectModal');
+        const projectModalClose = document.getElementById('projectModalClose');
+
+        if (!projectModal) return;
+
+        document.querySelectorAll('.project-card').forEach((card, i) => {
+            const detailLink = card.querySelector('.link:last-child');
+            detailLink?.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.openProjectModal(projects[i]);
+            });
+
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translate(-8px, -8px)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translate(0, 0)';
+            });
+        });
+
+        projectModalClose?.addEventListener('click', () => this.closeProjectModal());
+        projectModal?.addEventListener('click', (e) => {
+            if (e.target === projectModal) this.closeProjectModal();
+        });
+    },
+
+    openProjectModal(project) {
+        const projectModal = document.getElementById('projectModal');
+        document.getElementById('modalTitle').textContent = project.title;
+        document.getElementById('modalTech').textContent = project.tech;
+        document.getElementById('modalDesc').textContent = project.desc;
+        document.getElementById('modalLessons').textContent = project.lessons;
+        document.getElementById('modalDemo').href = project.demo;
+        
         projectModal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-    });
-});
+        setTimeout(() => projectModal.classList.add('active'), 10);
+    },
 
-projectModalClose?.addEventListener('click', () => {
-    projectModal.style.display = 'none';
-    document.body.style.overflow = '';
-});
+    closeProjectModal() {
+        const projectModal = document.getElementById('projectModal');
+        if (!projectModal) return;
+        
+        projectModal.classList.remove('active');
+        setTimeout(() => {
+            projectModal.style.display = 'none';
+            document.body.style.overflow = '';
+        }, 300);
+    },
 
-projectModal?.addEventListener('click', (e) => {
-    if (e.target === projectModal) {
-        projectModal.style.display = 'none';
-        document.body.style.overflow = '';
+    initThemeToggle() {
+        const themeToggle = document.getElementById('themeToggle');
+        if (!themeToggle) return;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const newTheme = theme === 'light' ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            this.showNotification(`THEME: ${newTheme.toUpperCase()}`, 'info');
+        });
+    },
+
+    initScrollProgress() {
+        const progressBar = document.createElement('div');
+        progressBar.className = 'scroll-progress';
+        document.body.appendChild(progressBar);
+
+        const updateProgress = () => {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            progressBar.style.width = `${progress}%`;
+        };
+
+        window.addEventListener('scroll', updateProgress, { passive: true });
+    },
+
+    initLazyLoading() {
+        const images = document.querySelectorAll('img[data-src]');
+        
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+    },
+
+    initBackToTop() {
+        const backToTop = document.createElement('button');
+        backToTop.className = 'back-to-top';
+        backToTop.innerHTML = '↑';
+        backToTop.setAttribute('aria-label', 'Back to top');
+        document.body.appendChild(backToTop);
+
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('visible', window.pageYOffset > 500);
+        }, { passive: true });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    },
+
+    showNotification(message, type) {
+        const notif = document.createElement('div');
+        notif.className = `notification notification-${type}`;
+        notif.innerHTML = `
+            <span class="notification-icon">${this.getNotificationIcon(type)}</span>
+            <span class="notification-message">${message}</span>
+        `;
+        
+        document.body.appendChild(notif);
+
+        setTimeout(() => notif.classList.add('show'), 10);
+        setTimeout(() => {
+            notif.classList.remove('show');
+            setTimeout(() => notif.remove(), 300);
+        }, 3500);
+    },
+
+    getNotificationIcon(type) {
+        const icons = {
+            success: '✓',
+            error: '✕',
+            info: 'ℹ'
+        };
+        return icons[type] || 'ℹ';
     }
-});
+};
+
 const projects = [
     {
         title: 'TASKFLOW',
@@ -189,11 +510,11 @@ const projects = [
         demo: 'https://sm-dis.vercel.app/'
     },
     {
-        title: 'Wedding Invitation',
-tech: 'HTML · CSS · JAVASCRIPT',
-desc: 'A modern wedding invitation website featuring interactive event details, smooth animations, and a fully responsive user experience.',
-lessons: 'The main challenge was creating smooth page transitions and maintaining responsive layouts across different screen sizes and devices.',
-demo: 'https://your-demo-link.com'
+        title: 'WEDDING INVITATION',
+        tech: 'HTML · CSS · JAVASCRIPT',
+        desc: 'A modern wedding invitation website featuring interactive event details, smooth animations, and a fully responsive user experience.',
+        lessons: 'The main challenge was creating smooth page transitions and maintaining responsive layouts across different screen sizes and devices.',
+        demo: 'https://your-demo-link.com'
     },
     {
         title: 'PORTFOLIO',
@@ -203,3 +524,5 @@ demo: 'https://your-demo-link.com'
         demo: '#hero'
     }
 ];
+
+document.addEventListener('DOMContentLoaded', () => App.init());
