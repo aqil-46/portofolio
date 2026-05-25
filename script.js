@@ -437,21 +437,7 @@ const App = {
         images.forEach(img => imageObserver.observe(img));
     },
 
-    initBackToTop() {
-        const backToTop = document.createElement('button');
-        backToTop.className = 'back-to-top';
-        backToTop.innerHTML = '↑';
-        backToTop.setAttribute('aria-label', 'Back to top');
-        document.body.appendChild(backToTop);
-
-        window.addEventListener('scroll', () => {
-            backToTop.classList.toggle('visible', window.pageYOffset > 500);
-        }, { passive: true });
-
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    },
+   
 
     showNotification(message, type) {
         const notif = document.createElement('div');
